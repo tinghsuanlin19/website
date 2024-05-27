@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var playIcon = 'URL_OF_PLAY_ICON'; // URL of play icon
-  var pauseIcon = 'URL_OF_PAUSE_ICON'; // URL of pause icon
+  var playIcon = 'https://uploads-ssl.webflow.com/5dde919caf313a3410908cfd/6654494e90c2fe397f246315_play_circle.svg'; // URL of play icon
+  var pauseIcon = 'https://uploads-ssl.webflow.com/5dde919caf313a3410908cfd/6654494d316582205ed4f036_pause_circle.svg'; // URL of pause icon
   var offset = window.innerHeight * 0.20; // 20% offset
 
   document.querySelectorAll('.myVideo').forEach((video, index) => {
