@@ -5,24 +5,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
   document.querySelectorAll('.myVideo').forEach((video, index) => {
     var button = document.querySelectorAll('.play-pause-button')[index];
+    var hasPlayed = false; // Track if the video has started playing
 
     // Play video when first in view
     function checkVideoVisibility() {
       var rect = video.getBoundingClientRect();
       var isVisible = rect.top >= -offset && rect.bottom <= window.innerHeight + offset;
 
-      if (isVisible && video.currentTime === 0) {
+      if (isVisible && !hasPlayed) {
         video.play();
         button.src = pauseIcon;
-      } else if (!isVisible && !video.paused) {
-        video.pause();
-        button.src = playIcon;
+        hasPlayed = true; // Mark video as having started
       }
     }
 
     // Change button state when video ends
     video.addEventListener('ended', () => {
       button.src = playIcon;
+      hasPlayed = false; // Allow video to be played again when scrolled into view
     });
 
     // Toggle play/pause on button click
