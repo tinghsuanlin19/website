@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", function() {
   var pauseIcon = 'https://uploads-ssl.webflow.com/5dde919caf313a3410908cfd/665c793fa7680cd7c30b1816_icon_pause_dark.svg'; // URL of pause icon
   var offset = window.innerHeight * 0.20; // 20% offset
 
-  document.querySelectorAll('.myVideo').forEach((video, index) => {
-    var button = document.querySelectorAll('.play-pause-button')[index];
+  document.querySelectorAll('.newVideoClass').forEach((video, index) => {
+    var button = document.querySelectorAll('.newButtonClass')[index];
     var hasPlayed = false; // Track if the video has started playing
 
     // Play video when first in view
@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Change button state when video ends
     video.addEventListener('ended', () => {
       button.src = playIcon;
+      hasPlayed = false; // Allow video to be played again when scrolled into view
     });
 
     // Toggle play/pause on button click
