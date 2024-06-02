@@ -6,13 +6,14 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll('.myVideo').forEach((video, index) => {
     var button = document.querySelectorAll('.play-pause-button')[index];
     var hasPlayed = false; // Track if the video has started playing
+    var manuallyControlled = false; // Track if the video has been manually controlled
 
     // Play video when first in view
     function checkVideoVisibility() {
       var rect = video.getBoundingClientRect();
       var isVisible = rect.top >= -offset && rect.bottom <= window.innerHeight + offset;
 
-      if (isVisible && !hasPlayed) {
+      if (isVisible && !hasPlayed && !manuallyControlled) {
         video.play();
         button.src = pauseIcon;
         hasPlayed = true; // Mark video as having started
@@ -22,11 +23,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // Change button state when video ends
     video.addEventListener('ended', () => {
       button.src = playIcon;
-      hasPlayed = false; // Allow video to be played again when scrolled into view
+      manuallyControlled = false; // Reset manual control flag
     });
 
     // Toggle play/pause on button click
     button.addEventListener('click', () => {
+      manuallyControlled = true; // Mark video as manually controlled
       if (video.paused) {
         video.play();
         button.src = pauseIcon;
