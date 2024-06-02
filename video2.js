@@ -1,4 +1,9 @@
-document.querySelectorAll('.myVideo').forEach((video, index) => {
+document.addEventListener("DOMContentLoaded", function() {
+  var playIcon = 'https://uploads-ssl.webflow.com/5dde919caf313a3410908cfd/665c79405109ee93b0840805_icon_play_dark.svg'; // URL of play icon
+  var pauseIcon = 'https://uploads-ssl.webflow.com/5dde919caf313a3410908cfd/665c793fa7680cd7c30b1816_icon_pause_dark.svg'; // URL of pause icon
+  var offset = window.innerHeight * 0.20; // 20% offset
+
+  document.querySelectorAll('.myVideo').forEach((video, index) => {
     var button = document.querySelectorAll('.play-pause-button')[index];
     var hasPlayed = false; // Track if the video has started playing
 
