@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Change button state when video ends
     video.addEventListener('ended', () => {
       button.src = playIcon;
-      hasPlayed = false; // Allow video to be played again when scrolled into view
     });
 
     // Toggle play/pause on button click
