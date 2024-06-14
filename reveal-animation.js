@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleScroll() {
         const windowHeight = window.innerHeight;
-        const offset = windowHeight * 0.10; // 10% offset
+        const offset = windowHeight * 0.15; // 10% offset
 
         elements.forEach(element => {
             const rect = element.getBoundingClientRect();
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 element.style.opacity = "1";
             } else {
                 if (willChange.includes('transform')) {
-                    element.style.transform = "translateY(50px)";
+                    element.style.transform = "translateY(40px)";
                 }
                 element.style.opacity = "0";
             }
