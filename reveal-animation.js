@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set initial styles for elements with the .will-change class
     elements.forEach(element => {
         if (getComputedStyle(element).willChange.includes('transform')) {
-            element.style.transform = "translateY(0.8em)";
+            element.style.transform = "translateY(40px)";
         }
         element.style.opacity = "0";
     });
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (elementOffset < windowHeight - offset) {
                 if (willChange.includes('transform')) {
-                    element.style.transform = "translateY(0em)";
+                    element.style.transform = "translateY(0)";
                 }
                 element.style.opacity = "1";
             } else {
