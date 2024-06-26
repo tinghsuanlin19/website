@@ -17,7 +17,7 @@
           button2.classList.remove('current');
 
           currentFill.style.transform = 'translateX(0)';
-          iframe.src = 'https://your-project2-prototype-1-link.com';
+          iframe.src = 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwKB5Hs1ZmGupiBixHXbyQK%2FPrototype%3Fpage-id%3D2%253A9%26node-id%3D2-416%26viewport%3D572%252C356%252C0.21%26t%3DB8NnAGq8WRNafiK4-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26starting-point-node-id%3D2%253A416';
 
           desc1.style.display = 'block';
           desc2.style.display = 'none';
@@ -29,7 +29,7 @@
           button1.classList.remove('current');
 
           currentFill.style.transform = 'translateX(6rem)';
-          iframe.src = 'https://your-project2-prototype-2-link.com';
+          iframe.src = 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwKB5Hs1ZmGupiBixHXbyQK%2FPrototype%3Fpage-id%3D30%253A1912%26node-id%3D30-1995%26viewport%3D389%252C375%252C0.21%26t%3D3Gf62szzQktjNtbb-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26starting-point-node-id%3D30%253A1995';
 
           desc1.style.display = 'none';
           desc2.style.display = 'block';
