@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleScroll() {
         const windowHeight = window.innerHeight;
-        const offset = windowHeight * 0.05; // 5% offset
+        const offset = windowHeight * 0.1; // 10% offset
 
         elements.forEach(element => {
             const rect = element.getBoundingClientRect();
