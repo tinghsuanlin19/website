@@ -17,7 +17,7 @@
           button2.classList.remove('current');
 
           currentFill.style.transform = 'translateX(0)';
-          iframe.src = 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwKB5Hs1ZmGupiBixHXbyQK%2FPrototype%3Fpage-id%3D2%253A9%26node-id%3D2-416%26viewport%3D572%252C356%252C0.21%26t%3DB8NnAGq8WRNafiK4-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26starting-point-node-id%3D2%253A416';
+          iframe.src = 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwKB5Hs1ZmGupiBixHXbyQK%2FPrototype%3Fpage-id%3D30%253A1264%26node-id%3D3734-1828%26viewport%3D970%252C688%252C0.35%26t%3DKvD8JohQAd5aLcD2-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26starting-point-node-id%3D3734%253A1828';
 
           desc1.style.display = 'block';
           desc2.style.display = 'none';
@@ -29,7 +29,7 @@
           button1.classList.remove('current');
 
           currentFill.style.transform = 'translateX(6rem)';
-          iframe.src = 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwKB5Hs1ZmGupiBixHXbyQK%2FPrototype%3Fpage-id%3D30%253A1912%26node-id%3D30-1995%26viewport%3D389%252C375%252C0.21%26t%3D3Gf62szzQktjNtbb-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26starting-point-node-id%3D30%253A1995';
+          iframe.src = 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwKB5Hs1ZmGupiBixHXbyQK%2FPrototype%3Fpage-id%3D30%253A1912%26node-id%3D3734-2248%26viewport%3D1422%252C1655%252C0.86%26t%3De7lFSYrDt1HYqRqv-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26starting-point-node-id%3D3734%253A2248';
 
           desc1.style.display = 'none';
           desc2.style.display = 'block';
