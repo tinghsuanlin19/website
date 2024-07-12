@@ -28,7 +28,7 @@
           button1.classList.add('enabled');
           button1.classList.remove('current');
 
-          currentFill.style.transform = 'translateX(6rem)';
+          currentFill.style.transform = 'translateX(7rem)';
           iframe.src = 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwKB5Hs1ZmGupiBixHXbyQK%2FPrototype%3Fpage-id%3D30%253A1912%26node-id%3D3734-2248%26viewport%3D1422%252C1655%252C0.86%26t%3De7lFSYrDt1HYqRqv-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26starting-point-node-id%3D3734%253A2248';
 
           desc1.style.display = 'none';
