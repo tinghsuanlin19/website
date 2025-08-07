@@ -1,5 +1,5 @@
 window.addEventListener("DOMContentLoaded", () => {
-  const targetClasses = ["slideup"];
+  const targetClasses = ["slideup", "dissolve"];
   let lastY = window.scrollY, dir = "down";
 
   // Track scroll direction
