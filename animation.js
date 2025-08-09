@@ -21,7 +21,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Adjust threshold and rootMargin here
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && dir === "down") {
@@ -29,9 +28,6 @@ window.addEventListener("DOMContentLoaded", () => {
         observer.unobserve(entry.target); // Stop observing once triggered
       }
     });
-  }, {
-    threshold: 0.6,             // Trigger when 60% of the element is visible
-    rootMargin: "0px 0px -10% 0px" // Push trigger point further into viewport
   });
 
   document.querySelectorAll("[data-scroll-trigger]").forEach((el) => observer.observe(el));
