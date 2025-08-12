@@ -5,7 +5,6 @@
   document.querySelectorAll('[data-stagger]').forEach(function (group) {
     var step = parseFloat(group.getAttribute('data-stagger')) || 0;
 
-    // Grab descendants matching any target
     var items = [];
     TARGETS.forEach(function (sel) {
       items = items.concat(Array.from(group.querySelectorAll(sel)));
@@ -18,18 +17,20 @@
     });
   });
 
-  // 2) Per-item delay overrides (now works for ALL targets)
+  // 2) Per-item delay overrides (works for ALL targets)
   var delaySelector = TARGETS.map(function (s) { return s + '[data-delay]'; }).join(', ');
   document.querySelectorAll(delaySelector).forEach(function (el) {
     var d = parseFloat(el.getAttribute('data-delay')) || 0;
     el.style.transitionDelay = d + 's';
   });
 
-  // 3) Observe & toggle
+  // 3) Observe & trigger only once
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
-      if (entry.isIntersecting) entry.target.classList.add('is-inview');
-      else entry.target.classList.remove('is-inview');
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-inview');
+        observer.unobserve(entry.target); // stop watching this element
+      }
     });
   }, { threshold: 0.1 });
 
