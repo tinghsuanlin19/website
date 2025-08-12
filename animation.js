@@ -1,28 +1,41 @@
-window.addEventListener("DOMContentLoaded", () => {
-  const targetClasses = ["slideup", "dissolve"];
-  let lastY = window.scrollY, dir = "down";
+(function () {
+  var TARGETS = ['.slide-up', '.fade-in'];
 
-  window.addEventListener("scroll", () => {
-    const y = window.scrollY;
-    dir = y > lastY ? "down" : "up";
-    lastY = y;
-  });
+  // 1) Stagger: get items inside each [data-stagger] group
+  document.querySelectorAll('[data-stagger]').forEach(function (group) {
+    var step = parseFloat(group.getAttribute('data-stagger')) || 0;
 
-  const animate = (el) =>
-    targetClasses.forEach((cls) =>
-      el.querySelectorAll(`.${cls}`).forEach((child) => {
-        child.classList.remove(cls);
-        void child.offsetWidth;
-        child.classList.add(cls);
-      })
-    );
+    // Grab descendants matching any target
+    var items = [];
+    TARGETS.forEach(function (sel) {
+      items = items.concat(Array.from(group.querySelectorAll(sel)));
+    });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting && dir === "down") animate(entry.target);
+    items.forEach(function (el, i) {
+      if (!el.hasAttribute('data-delay')) {
+        el.style.transitionDelay = (step * i) + 's';
+      }
     });
   });
 
-  document.querySelectorAll("[data-scroll-trigger]").forEach((el) => observer.observe(el));
-});
+  // 2) Per-item delay overrides (now works for ALL targets)
+  var delaySelector = TARGETS.map(function (s) { return s + '[data-delay]'; }).join(', ');
+  document.querySelectorAll(delaySelector).forEach(function (el) {
+    var d = parseFloat(el.getAttribute('data-delay')) || 0;
+    el.style.transitionDelay = d + 's';
+  });
+
+  // 3) Observe & toggle
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) entry.target.classList.add('is-inview');
+      else entry.target.classList.remove('is-inview');
+    });
+  }, { threshold: 0.1 });
+
+  var targetSelector = TARGETS.join(', ');
+  document.querySelectorAll(targetSelector).forEach(function (el) {
+    observer.observe(el);
+  });
+})();
 
