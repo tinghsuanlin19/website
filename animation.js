@@ -1,4 +1,3 @@
-
 (function () {
   var TARGETS = ['.slide-up', '.fade-in'];
 
