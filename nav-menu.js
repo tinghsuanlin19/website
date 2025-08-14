@@ -1,70 +1,67 @@
-// Elements
-const root = document.documentElement;
-const btn = document.querySelector('.nav-menu-button');
-const curtain = document.querySelector('.nav-curtain'); // ← renamed
-const topOpen = document.querySelector('#anim-menu-line-top-open');
-const topClose = document.querySelector('#anim-menu-line-top-close');
-const botOpen = document.querySelector('#anim-menu-line-bottom-open');
-const botClose = document.querySelector('#anim-menu-line-bottom-close');
+(function () {
+  const root = document.documentElement;
+  const btn = document.querySelector('.nav-menu-button');
+  const tray = document.querySelector('.nav-menu-tray');
+  const curtain = document.querySelector('.nav-curtain');
+  const links = document.querySelectorAll('.nav-menu-link');
 
-let state = 'closed';
-const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // SVG animate elements to trigger (if present)
+  const lineTopOpen = document.getElementById('anim-menu-line-top-open');
+  const lineBottomOpen = document.getElementById('anim-menu-line-bottom-open');
+  const lineTopClose = document.getElementById('anim-menu-line-top-close');
+  const lineBottomClose = document.getElementById('anim-menu-line-bottom-close');
 
-// read CSS var (supports "250ms" or "0.25s") -> ms number
-const cssms = (name) => {
-  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  if (v.endsWith('ms')) return parseFloat(v);
-  if (v.endsWith('s')) return parseFloat(v) * 1000;
-  const n = parseFloat(v); return Number.isFinite(n) ? n : 0;
-};
+  const trigger = (el) => el && typeof el.beginElement === 'function' && el.beginElement();
+  const isOpen = () => root.getAttribute('data-menu-state') === 'open';
 
-// timings from CSS (always fresh)
-const timings = () => ({
-  itemsOpen: cssms('--items-open'),
-  itemsClose: cssms('--items-close'),
-  itemsOpenDelay: cssms('--items-open-delay'),
-});
+  function openMenu() {
+    root.setAttribute('data-menu-state', 'open');
+    if (btn) btn.setAttribute('aria-label', 'Close');
+    // hamburger → X
+    trigger(lineTopOpen);
+    trigger(lineBottomOpen);
+  }
 
-const setState = (s) => { root.setAttribute('data-menu-state', s); state = s; };
-const play = (open) => open
-  ? (topOpen?.beginElement?.(), botOpen?.beginElement?.())
-  : (topClose?.beginElement?.(), botClose?.beginElement?.());
+  function closeMenu() {
+    root.setAttribute('data-menu-state', 'closed');
+    if (btn) btn.setAttribute('aria-label', 'Menu');
+    // X → hamburger
+    trigger(lineTopClose);
+    trigger(lineBottomClose);
+  }
 
-function openMenu() {
-  if (state === 'open' || state === 'opening') return;
-  setState('opening'); play(true); btn?.setAttribute('aria-label','Close');
-  const { itemsOpen, itemsOpenDelay } = timings();
-  setTimeout(() => setState('open'), REDUCED ? 0 : (itemsOpen + itemsOpenDelay));
-}
+  // Toggle
+  btn?.addEventListener('click', () => (isOpen() ? closeMenu() : openMenu()));
 
-function closeMenu() {
-  if (state === 'closed' || state === 'closing') return;
-  setState('closing'); play(false); btn?.setAttribute('aria-label','Menu');
-  const { itemsClose } = timings();
-  setTimeout(() => setState('closed'), REDUCED ? 0 : itemsClose);
-}
-
-// Toggle via button
-btn?.addEventListener('click', () => (state === 'open' ? closeMenu() : openMenu()));
-
-// Curtain closes menu
-curtain?.addEventListener('pointerdown', closeMenu);
-
-// Close when tapping outside the menu/button (capture phase)
-document.addEventListener('pointerdown', (e) => {
-  if (state !== 'open') return;
-  const t = e.target;
-  if (!t.closest('.nav-menu-mobile') && !t.closest('.nav-menu-button')) closeMenu();
-}, true);
-
-// Close on scroll / touchmove
-window.addEventListener('scroll', () => state === 'open' && closeMenu(), { passive: true });
-window.addEventListener('touchmove', () => state === 'open' && closeMenu(), { passive: true });
-
-// Nav item: close *after* click so navigation still happens on mobile
-document.querySelectorAll('.nav-item-mobile').forEach((el) => {
-  el.addEventListener('click', () => {
-    // Defer close to after the browser processes the click (navigation/route)
-    requestAnimationFrame(() => requestAnimationFrame(closeMenu));
+  // 1) Close when a nav link is tapped (defer so the click can navigate)
+  links.forEach((el) => {
+    el.addEventListener('click', () => {
+      requestAnimationFrame(() => requestAnimationFrame(() => isOpen() && closeMenu()));
+    });
   });
-});
+
+  // 2) Close when tapping outside the tray or button (capture phase)
+  document.addEventListener(
+    'pointerdown',
+    (e) => {
+      if (!isOpen()) return;
+      const t = e.target;
+      if (!t.closest('.nav-menu-tray') && !t.closest('.nav-menu-button')) closeMenu();
+    },
+    true
+  );
+
+  // Also let the curtain itself close the menu
+  curtain?.addEventListener('pointerdown', () => isOpen() && closeMenu());
+
+  // 3) Close on scroll or touchmove
+  const closeIfOpen = () => isOpen() && closeMenu();
+  window.addEventListener('scroll', closeIfOpen, { passive: true });
+  window.addEventListener('touchmove', closeIfOpen, { passive: true });
+
+  // Initial state WITHOUT firing SVG animations
+  if (!root.hasAttribute('data-menu-state')) {
+    root.setAttribute('data-menu-state', 'closed');
+    btn?.setAttribute('aria-label', 'Menu');
+  }
+})();
