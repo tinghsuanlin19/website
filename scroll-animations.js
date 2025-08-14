@@ -4,58 +4,56 @@
   const TARGETS_ONCE = ['.slide-up', '.fade-in']; // trigger once
   const TARGETS_TOGGLE = ['.reveal'];             // reversible
 
-  // Parse "120ms", "0.12s", or numeric -> seconds
-  function parseTimeToSeconds(v) {
-    if (v == null || v === '') return 0;
-    if (typeof v === 'number') return v; // assume seconds
-    const s = String(v).trim().toLowerCase();
-    if (s.endsWith('ms')) return parseFloat(s) / 1000 || 0;
-    if (s.endsWith('s'))  return parseFloat(s) || 0;
-    return parseFloat(s) || 0; // bare number => seconds
-  }
-
   // ----- helpers: build stagger metadata -----
   // meta: el -> { stagger (s), index, total, group: 'once'|'toggle' }
   const meta = new Map();
 
   document.querySelectorAll('[data-stagger]').forEach(container => {
-    const step = parseTimeToSeconds(container.getAttribute('data-stagger')) || 0;
+    const step = parseFloat(container.getAttribute('data-stagger')) || 0;
 
     let onceItems = [];
     TARGETS_ONCE.forEach(sel => {
       onceItems = onceItems.concat(Array.from(container.querySelectorAll(sel)));
     });
-    onceItems.forEach((el, i) => meta.set(el, { stagger: step, index: i, total: onceItems.length, group: 'once' }));
+    onceItems.forEach((el, i) =>
+      meta.set(el, { stagger: step, index: i, total: onceItems.length, group: 'once' })
+    );
 
     let toggleItems = [];
     TARGETS_TOGGLE.forEach(sel => {
       toggleItems = toggleItems.concat(Array.from(container.querySelectorAll(sel)));
     });
-    toggleItems.forEach((el, i) => meta.set(el, { stagger: step, index: i, total: toggleItems.length, group: 'toggle' }));
+    toggleItems.forEach((el, i) =>
+      meta.set(el, { stagger: step, index: i, total: toggleItems.length, group: 'toggle' })
+    );
   });
 
   const allSelectors = TARGETS_ONCE.concat(TARGETS_TOGGLE).join(', ');
   document.querySelectorAll(allSelectors).forEach(el => {
-    if (!meta.has(el)) meta.set(el, { stagger: 0, index: 0, total: 1, group: TARGETS_TOGGLE.some(s => el.matches(s)) ? 'toggle' : 'once' });
+    if (!meta.has(el))
+      meta.set(el, { stagger: 0, index: 0, total: 1, group: TARGETS_TOGGLE.some(s => el.matches(s)) ? 'toggle' : 'once' });
   });
 
   // ----- delay setter (shared) -----
   function setTransitionDelay(el, direction /* 'down'|'up' */) {
     if (el.hasAttribute('data-delay')) {
-      const d = parseTimeToSeconds(el.getAttribute('data-delay'));
+      const d = parseFloat(el.getAttribute('data-delay')) || 0;
       el.style.transitionDelay = d + 's';
       return;
     }
 
     const m = meta.get(el);
-    if (!m) { el.style.transitionDelay = '0s'; return; }
+    if (!m) {
+      el.style.transitionDelay = '0s';
+      return;
+    }
 
     let orderIndex = m.index;
     if (m.group === 'toggle' && direction === 'up') {
-      orderIndex = (m.total - 1 - m.index);
+      orderIndex = m.total - 1 - m.index;
     }
 
-    const delay = Math.max(0, orderIndex * m.stagger); // already seconds
+    const delay = Math.max(0, orderIndex * m.stagger);
     el.style.transitionDelay = delay + 's';
   }
 
@@ -63,11 +61,13 @@
   // Part 1: Once-only animations
   // ===============================
   const onceSelector = TARGETS_ONCE.join(', ');
+  let onceObserver = null;
+
   if (onceSelector) {
-    const onceObserver = new IntersectionObserver((entries) => {
+    onceObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          setTransitionDelay(entry.target, 'down');
+          setTransitionDelay(entry.target, 'down'); // forward order
           entry.target.classList.add('is-inview');
           onceObserver.unobserve(entry.target);
         }
@@ -112,4 +112,57 @@
     window.addEventListener('resize', onScroll);
     onScroll();
   }
+
+  // ===============================
+  // Part 3: Hash-aware bootstrapping
+  // ===============================
+  function hashTargetElement() {
+    const id = location.hash ? location.hash.slice(1) : '';
+    if (!id) return null;
+    return document.getElementById(id) || document.querySelector(`[name="${CSS.escape(id)}"]`);
+  }
+
+  function instantRevealOnLoad() {
+    const target = hashTargetElement();
+    if (!target) return;
+
+    const viewportTop = 0;
+    const viewportBottom = window.innerHeight;
+
+    // Pre-mark once-only items ABOVE viewport
+    if (onceSelector) {
+      document.querySelectorAll(onceSelector).forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom <= viewportTop) {
+          el.classList.add('is-inview');
+          el.style.transitionDelay = '0s';
+          if (onceObserver) onceObserver.unobserve(el);
+        }
+      });
+    }
+
+    // Instantly reveal once-only items IN VIEW inside target
+    if (onceSelector) {
+      const inTarget = target.querySelectorAll(onceSelector);
+      inTarget.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const inView = rect.top < viewportBottom && rect.bottom > viewportTop;
+        if (inView) {
+          el.classList.add('is-inview');
+          el.style.transitionDelay = '0s';
+          if (onceObserver) onceObserver.unobserve(el);
+        }
+      });
+    }
+
+    // Sync .reveal states
+    onScroll();
+  }
+
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => requestAnimationFrame(instantRevealOnLoad));
+  });
+  window.addEventListener('hashchange', () => {
+    requestAnimationFrame(() => requestAnimationFrame(instantRevealOnLoad));
+  });
 })();
