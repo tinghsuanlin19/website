@@ -46,10 +46,18 @@
     (e) => {
       if (!isOpen()) return;
       const t = e.target;
-      if (!t.closest('.nav-menu-tray') && !t.closest('.nav-menu-button')) closeMenu();
+
+      // If tapping a nav link, let the click fire (anchor navigation), don't close yet.
+      if (t.closest('.nav-menu-link')) return;
+
+      // If it's truly outside, close — but defer so other handlers can run first.
+      if (!t.closest('.nav-menu-tray') && !t.closest('.nav-menu-button')) {
+        requestAnimationFrame(() => requestAnimationFrame(closeMenu));
+      }
     },
     true
   );
+
 
   // Also let the curtain itself close the menu
   curtain?.addEventListener('pointerdown', () => isOpen() && closeMenu());
