@@ -43,10 +43,7 @@
     }
 
     const m = meta.get(el);
-    if (!m) {
-      el.style.transitionDelay = '0s';
-      return;
-    }
+    if (!m) { el.style.transitionDelay = '0s'; return; }
 
     let orderIndex = m.index;
     if (m.group === 'toggle' && direction === 'up') {
@@ -107,9 +104,25 @@
     });
   }
 
+  // NEW: initial sync so items already past trigger show on first paint
+  function initReveal() {
+    const triggerY = window.innerHeight * TRIGGER_RATIO;
+    document.querySelectorAll(toggleSelector).forEach(el => {
+      const top = el.getBoundingClientRect().top;
+      if (top <= triggerY) {
+        setTransitionDelay(el, 'down'); // treat as entering from top on load
+        el.classList.add('is-inview');
+      } else {
+        el.classList.remove('is-inview');
+      }
+    });
+  }
+
   if (toggleSelector) {
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', () => { initReveal(); onScroll(); });
+    // run once immediately
+    initReveal();
     onScroll();
   }
 
@@ -155,7 +168,8 @@
       });
     }
 
-    // Sync .reveal states
+    // Also resync .reveal after the hash jump
+    initReveal();
     onScroll();
   }
 
@@ -166,3 +180,4 @@
     requestAnimationFrame(() => requestAnimationFrame(instantRevealOnLoad));
   });
 })();
+
